@@ -30,13 +30,20 @@ class PCA():
 		principal_weights_index = np.argsort(weights)[-self.n_components:]
 		principal_weights_index = [principal_weights_index[-1-i] for i in range(len(principal_weights_index))]
 		self.explained_variances_ = weights[principal_weights_index]
-		principal_vectors = np.array([vectors[:, i] for i in principal_weights_index]).T
-		result =  matrix.dot(principal_vectors)
+		self.principal_vectors = np.array([vectors[:, i] for i in principal_weights_index]).T
+		result =  matrix.dot(self.principal_vectors)
 		return result
+	# This method can only be called after self.fit_transform
+	def transform(self, data):
+		matrix = np.array(data)
+		matrix = matrix -self.mean
+		return matrix.dot(self.principal_vectors)
+
 
 if __name__=='__main__':
 	x = np.random.rand(250)
 	y = 3*np.random.rand(250)-1 + 4*x
+	
 	
 	pca = PCA(n_components = 2)
 	data = np.array([x, y]).T
